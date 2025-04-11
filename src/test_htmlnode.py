@@ -5,21 +5,21 @@ from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
-        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {"class": "container"})
-        node2 = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {"class": "container"})
+        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {"class": "container"})
+        node2 = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {"class": "container"})
         self.assertEqual(node, node2)
 
     def test_noteq(self):
-        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {"class": "container"})
-        node2 = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {"class": "container-fluid"})
+        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {"class": "container"})
+        node2 = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {"class": "container-fluid"})
         self.assertNotEqual(node, node2)
 
     def test_props_to_html(self):
-        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {"class": "container"})
+        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {"class": "container"})
         self.assertEqual(node.props_to_html(), 'class="container"')
 
     def test_props_to_html_empty(self):
-        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.NORMAL)], {})
+        node = HTMLNode("div", "Hello World", [TextNode("Hello World", TextType.TEXT)], {})
         self.assertEqual(node.props_to_html(), '')
 
 class TestLeafNode(unittest.TestCase):
