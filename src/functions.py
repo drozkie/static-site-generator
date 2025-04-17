@@ -3,7 +3,7 @@ from htmlnode import *
 import re
 
 def extract_markdown_images(text):
-    matches = re.findall(r"\!\[(image)\]\((.*?)\)", text)
+    matches = re.findall(r"\!\[(.*?)\]\((.*?)\)", text)
     return matches
 
 def extract_markdown_links(text):
@@ -89,10 +89,11 @@ def split_nodes_link(old_nodes):
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
-        if node.text_type == TextType.TEXT:
-            split_node = node.text.split(delimiter, 3)
+        if node.text_type == TextType.TEXT and delimiter in node.text:
+            split_node = node.text.split(delimiter, 2)
             if len(split_node) < 3:
                 raise Exception(f"Closing delimiter not found.\nInput = {node}\nDelimiter = '{delimiter}'")
+### NEEDS TO BE REDONE, CAUSING DUPLICATES IN LONG NODES
             new_nodes.extend(
                     [
                     TextNode(split_node[0], TextType.TEXT),
@@ -102,6 +103,23 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 )
         else:
             new_nodes.append(node)
+    return new_nodes
+
+def text_to_text_node(text):
+    if text == "":
+        raise ValueError("Invalid value, string cannot be empty")
+    if not isinstance(text, str):
+        raise TypeError("Invalid input, not of type str")
+
+    new_nodes = [TextNode(text, TextType.TEXT)]
+
+    new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
+
+    print(f"Printing Nodes: {new_nodes}")
     return new_nodes
 
 def text_node_to_html_node(text_node):
