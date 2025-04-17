@@ -89,6 +89,30 @@ class TestTextToHTMLNode(unittest.TestCase):
         self.assertEqual(split_node[2].text_type, TextType.TEXT)
         self.assertEqual(split_node[2].text, " word")
 
+    def test_split_image(self):
+        node = [TextNode("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and some text.", TextType.TEXT)]
+        split_node = split_nodes_image(node)
+        self.assertEqual(len(split_node), 3)
+        self.assertEqual(split_node[0].text_type, TextType.TEXT)
+        self.assertEqual(split_node[0].text, "This is text with an ")
+        self.assertEqual(split_node[1].text_type, TextType.IMAGE)
+        self.assertEqual(split_node[1].text, "image")
+        self.assertEqual(split_node[1].url, "https://i.imgur.com/zjjcJKZ.png")
+        self.assertEqual(split_node[2].text_type, TextType.TEXT)
+        self.assertEqual(split_node[2].text, " and some text.")
+
+    def test_split_link(self):
+        node = [TextNode("This is text with a [drozkie.net](https://www.drozkie.net) and some text.", TextType.TEXT)]
+        split_node = split_nodes_link(node)
+        self.assertEqual(len(split_node), 3)
+        self.assertEqual(split_node[0].text_type, TextType.TEXT)
+        self.assertEqual(split_node[0].text, "This is text with a ")
+        self.assertEqual(split_node[1].text_type, TextType.LINK)
+        self.assertEqual(split_node[1].text, "drozkie.net")
+        self.assertEqual(split_node[1].url, "https://www.drozkie.net")
+        self.assertEqual(split_node[2].text_type, TextType.TEXT)
+        self.assertEqual(split_node[2].text, " and some text.")
+
 class MarkdownExtraction(unittest.TestCase):
     def test_extract_markdown_images(self):
         matches = extract_markdown_images(
