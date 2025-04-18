@@ -1,6 +1,6 @@
 from textnode import *
 from htmlnode import *
-from functions import *
+from markdown import *
 
 def main():
     pass
