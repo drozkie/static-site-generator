@@ -146,3 +146,100 @@ class MarkdownToTextNode(unittest.TestCase):
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ])
         self.assertEqual(len(node), 10)
+
+    def test_text_to_text_node_two_bold(self):
+        text = "This is **text** with extra **bold** and _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        node = text_to_text_node(text)
+        self.assertEqual(node, [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with extra ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ])
+        self.assertEqual(len(node), 12)
+
+    def test_text_to_text_node_two_italic(self):
+        text = "This is **text** with extra _italic_ and _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        node = text_to_text_node(text)
+        self.assertEqual(node, [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with extra ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ])
+        self.assertEqual(len(node), 12)
+
+    def test_text_to_text_node_two_code(self):
+        text = "This is **text** with _italic_ word and two `code` `blocks` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        node = text_to_text_node(text)
+        self.assertEqual(node, [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and two ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" ", TextType.TEXT),
+            TextNode("blocks", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ])
+        self.assertEqual(len(node), 12)
+
+    def test_text_to_text_node_two_links(self):
+        text = "This is **text** with extra **bold** and _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and two [link](https://boot.dev) [second](https://boot.dev)"
+        node = text_to_text_node(text)
+        self.assertEqual(node, [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with extra ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and two ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+            TextNode(" ", TextType.TEXT),
+            TextNode("second", TextType.LINK, "https://boot.dev")
+        ])
+        self.assertEqual(len(node), 14)
+
+    def test_text_to_text_node_two_images(self):
+        text = "This is **text** with extra **bold** and _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and ![obi two image](https://i.imgur.com/fJRm5Vk.jpeg)"
+        node = text_to_text_node(text)
+        self.assertEqual(node, [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with extra ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("obi two image", TextType.IMAGE, "https://i.imgur.com/fJRm5Vk.jpeg"),
+        ])
+        self.assertEqual(len(node), 12)

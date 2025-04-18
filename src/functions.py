@@ -62,6 +62,7 @@ def split_nodes_link(old_nodes):
 
         if len(links) == 0:
             new_nodes.append(node)
+            continue
 
         for link in links:
             split_node = original_text.split(f"[{link[0]}]({link[1]})")
@@ -86,23 +87,36 @@ def split_nodes_link(old_nodes):
 
     return new_nodes
 
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
+def split_nodes_delimiter(old_nodes, delimiter, text_type) -> list:
     new_nodes = []
-    for node in old_nodes:
-        if node.text_type == TextType.TEXT and delimiter in node.text:
-            split_node = node.text.split(delimiter, 2)
-            if len(split_node) < 3:
-                raise Exception(f"Closing delimiter not found.\nInput = {node}\nDelimiter = '{delimiter}'")
-### NEEDS TO BE REDONE, CAUSING DUPLICATES IN LONG NODES
-            new_nodes.extend(
+
+    def split(node_text) -> list:
+        split_list = []
+
+        if node_text.count(delimiter) >= 2:
+            split_text = node_text.split(delimiter, 2)
+
+            split_list.extend(
                     [
-                    TextNode(split_node[0], TextType.TEXT),
-                    TextNode(split_node[1], text_type),
-                    TextNode(split_node[2], TextType.TEXT)
+                        TextNode(split_text[0], TextType.TEXT),
+                        TextNode(split_text[1], text_type)
                     ]
                 )
+
+            if len(split_text) == 3:
+                split_list.extend(split(split_text[2]))
+        else:
+            split_list.append(TextNode(node_text, TextType.TEXT))
+
+        return split_list
+
+    for node in old_nodes:
+        if node.text_type == TextType.TEXT:
+            result = split(node.text)
+            new_nodes.extend(result)
         else:
             new_nodes.append(node)
+
     return new_nodes
 
 def text_to_text_node(text):
@@ -119,7 +133,6 @@ def text_to_text_node(text):
     new_nodes = split_nodes_image(new_nodes)
     new_nodes = split_nodes_link(new_nodes)
 
-    print(f"Printing Nodes: {new_nodes}")
     return new_nodes
 
 def text_node_to_html_node(text_node):
