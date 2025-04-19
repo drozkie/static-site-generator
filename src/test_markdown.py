@@ -272,9 +272,27 @@ This is the same paragraph on a new line
             ("This is **bolded** paragraph", BlockType.PARAGRAPH),
             ("This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line", BlockType.PARAGRAPH),
             ("- This is a list\n- with items", BlockType.UNORDERED_LIST),
-            ("## This is a heading.", BlockType.HEADING),
-            ("1. This is an ordered list\n2. With a second item", BlockType.ORDERED_LIST),
+            ("# This is a heading 1.", BlockType.HEADING),
+            ("## This is a heading 2.", BlockType.HEADING),
+            ("### This is a heading 3.", BlockType.HEADING),
+            ("#### This is a heading 4.", BlockType.HEADING),
+            ("##### This is a heading 5.", BlockType.HEADING),
+            ("###### This is a heading 6.", BlockType.HEADING),
+            ("1. This is an ordered list\n2. With a second item\n11. With 11 items.", BlockType.ORDERED_LIST),
             ("```\nThis is a code block.\n```", BlockType.CODE)
+        ]
+        for block, block_type in blocks:
+            match_block_type = block_to_block_type(block)
+            self.assertEqual(match_block_type, block_type)
+
+    def test_blocks_to_block_type_invalid_types(self):
+        blocks = [
+            ("This is **bolded** paragraph", BlockType.PARAGRAPH),
+            ("This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line", BlockType.PARAGRAPH),
+            ("-- This is an invalid list\n-- with invalid items", BlockType.PARAGRAPH),
+            ("####### This is an invalid heading.", BlockType.PARAGRAPH),
+            (". This is an invalid ordered list\n. With a second invalid item", BlockType.PARAGRAPH),
+            ("``\nThis is a code block.\n```", BlockType.PARAGRAPH)
         ]
         for block, block_type in blocks:
             match_block_type = block_to_block_type(block)
