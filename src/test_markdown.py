@@ -3,6 +3,7 @@ import unittest
 from markdown import *
 from textnode import *
 from htmlnode import *
+from blocks import *
 
 class TestTextToHTMLNode(unittest.TestCase):
     def test_text(self):
@@ -266,26 +267,15 @@ This is the same paragraph on a new line
             ],
         )
 
-    def test_markdown_to_blocks_second_test(self):
-        md = """
-This is **bolded** paragraph
-
-This is another paragraph with _italic_ text and `code` here
-This is the same paragraph on a new line
-
-- This is a list
-- with items
-
-Added another block for
-testing.
-"""
-        blocks = markdown_to_blocks(md)
-        self.assertEqual(
-            blocks,
-            [
-                "This is **bolded** paragraph",
-                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
-                "- This is a list\n- with items",
-                "Added another block for\ntesting."
-            ],
-        )
+    def test_blocks_to_block_type(self):
+        blocks = [
+            ("This is **bolded** paragraph", BlockType.PARAGRAPH),
+            ("This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line", BlockType.PARAGRAPH),
+            ("- This is a list\n- with items", BlockType.UNORDERED_LIST),
+            ("## This is a heading.", BlockType.HEADING),
+            ("1. This is an ordered list\n2. With a second item", BlockType.ORDERED_LIST),
+            ("```\nThis is a code block.\n```", BlockType.CODE)
+        ]
+        for block, block_type in blocks:
+            match_block_type = block_to_block_type(block)
+            self.assertEqual(match_block_type, block_type)
