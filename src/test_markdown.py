@@ -4,6 +4,7 @@ from markdown import *
 from textnode import *
 from htmlnode import *
 from blocks import *
+from main import *
 
 class TestTextToHTMLNode(unittest.TestCase):
     def test_text(self):
@@ -297,3 +298,72 @@ This is the same paragraph on a new line
         for block, block_type in blocks:
             match_block_type = block_to_block_type(block)
             self.assertEqual(match_block_type, block_type)
+
+    ## INCOMPLETE TEST / CHECKING PROGRESS
+    def test_blocks_to_block_type_invalid_types(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+
+# This is a heading 1.
+
+## This is a heading 2.
+
+### This is a heading 3.
+
+#### This is a heading 4.
+
+##### This is a heading 5.
+
+###### This is a heading 6.
+
+1. This is an ordered list
+2. With a second item
+3. With 3 items.
+"""
+
+            # ```
+            # This is a code block.
+            # ```
+
+        nodes = convert_markdown(md)
+
+        # blocks = [
+        #     ("This is **bolded** paragraph", BlockType.PARAGRAPH),
+        #     ("This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line", BlockType.PARAGRAPH),
+        #     ("- This is a list\n- with items", BlockType.UNORDERED_LIST),
+        #     ("# This is a heading 1.", BlockType.HEADING),
+        #     ("## This is a heading 2.", BlockType.HEADING),
+        #     ("### This is a heading 3.", BlockType.HEADING),
+        #     ("#### This is a heading 4.", BlockType.HEADING),
+        #     ("##### This is a heading 5.", BlockType.HEADING),
+        #     ("###### This is a heading 6.", BlockType.HEADING),
+        #     ("1. This is an ordered list\n2. With a second item\n11. With 11 items.", BlockType.ORDERED_LIST),
+        #     ("```\nThis is a code block.\n```", BlockType.CODE)
+        # ]
+
+        self.assertEqual(nodes[0].value, "This is **bolded** paragraph")
+        self.assertEqual(nodes[0].tag,"p")
+        self.assertEqual(nodes[1].value, "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line")
+        self.assertEqual(nodes[1].tag,"p")
+        self.assertEqual(nodes[2].value, "- This is a list\n- with items")
+        self.assertEqual(nodes[2].tag,"ul")
+        self.assertEqual(nodes[3].value, "This is a heading 1.")
+        self.assertEqual(nodes[3].tag,"h1")
+        self.assertEqual(nodes[4].value, "This is a heading 2.")
+        self.assertEqual(nodes[4].tag,"h2")
+        self.assertEqual(nodes[5].value, "This is a heading 3.")
+        self.assertEqual(nodes[5].tag,"h3")
+        self.assertEqual(nodes[6].value, "This is a heading 4.")
+        self.assertEqual(nodes[6].tag,"h4")
+        self.assertEqual(nodes[7].value, "This is a heading 5.")
+        self.assertEqual(nodes[7].tag,"h5")
+        self.assertEqual(nodes[8].value, "This is a heading 6.")
+        self.assertEqual(nodes[8].tag,"h6")
+        self.assertEqual(nodes[9].value, "1. This is an ordered list\n2. With a second item\n3. With 3 items.")
+        self.assertEqual(nodes[9].tag,"ol")

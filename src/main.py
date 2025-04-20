@@ -17,9 +17,12 @@ def assign_html_node(blocks):
             case BlockType.PARAGRAPH:
                 html_nodes.append(HTMLNode("p", block))
             case BlockType.HEADING:
-                heading = re.match(r"/^(\#{1,6})/g", block)
-                count = len(heading)
-                html_nodes.append(HTMLNode(f"h{count}", block))
+                pattern = re.compile(r'^(#{1,6})')
+                match = pattern.match(block)
+                hashes = match.group(1)
+                count = len(hashes)
+                strip_block = block.replace(hashes, "").strip()
+                html_nodes.append(HTMLNode(f"h{count}", strip_block))
             case BlockType.QUOTE:
                 html_nodes.append(HTMLNode("q", block))
             case BlockType.UNORDERED_LIST:
@@ -35,11 +38,10 @@ def convert_markdown(text):
     ## Create HTMLNode Equivalent
     html_nodes = assign_html_node(blocks)
 
+    return html_nodes
     ##
 
-#Loop over each block
-##Determine the type of block (you already have a function for this)
-##Based on the type of block, create a new HTMLNode with the proper data
+
 ##Assign the proper child HTMLNode objects to the block node. I created a shared text_to_children(text) function that works for all block types. It takes a string of text and returns a list of HTMLNodes that represent the inline markdown using previously created functions (think TextNode -> HTMLNode).
 ##The "code" block is a bit of a special case: it should not do any inline markdown parsing of its children. I didn't use my text_to_children function for this block type, I manually made a TextNode and used text_node_to_html_node.
 
